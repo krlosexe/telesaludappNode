@@ -60,7 +60,7 @@ io.on('connect',(client)=>{
         const id_asesora = sessionMap[data.sender.valoration.user_asesora]
         const image     = `images/${data.sender.valoration.valoration_code}/out.png?ramdom=`
         
-        console.log(id_clientls)
+        console.log(id_client)
 
         io.to(id_client).emit("displayImage", {"uri" : image});
         io.to(id_asesora).emit("displayImage", {"uri" : image});  
