@@ -21,5 +21,9 @@ Routes.use(function(req, res, next) {
 
 Routes.post('/api/save/img', ImageController.save);
 
+
+Routes.post('/api/save/img/gallery', ImageController.saveImgGallery);
+
+
 module.exports = Routes;
 
