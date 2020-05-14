@@ -5,10 +5,12 @@ const config          = require('../config/config')
 
 app.set('key', config.key);
 exports.save = function(request, response) {
-    console.log("INIT Image");
+    
 
     var base64Data = request.body.image.replace(/^data:image\/png;base64,/, "");
     const code     = request.body.code
+
+    console.log("INIT Image", code);
 
     var fs      = require('fs');
     var folder  = `public/images/${code}`;
