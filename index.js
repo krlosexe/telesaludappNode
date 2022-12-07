@@ -1,12 +1,12 @@
-const path            = require('path')
-const express         = require('express')
-const app             = express()
-const SocketIO        = require('socket.io')
-const bodyParser      = require('body-parser');
+const path = require('path')
+const express = require('express')
+const app = express()
+const SocketIO = require('socket.io')
+const bodyParser = require('body-parser');
 
 
 
-app.use(bodyParser.json({limit: '50mb'})); // support json encoded bodies
+app.use(bodyParser.json({ limit: '50mb' })); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' })); // support encoded bodies
 
 app.use(require('./api/api.js'));
@@ -14,23 +14,21 @@ app.use(require('./api/api.js'));
 
 
 // settings
-app.set('port', process.env.PORT || 3000 )
-// static files
-app.use(express.static(path.join(__dirname,'public')))
+app.set('port', process.env.PORT || 3000)
+    // static files
+app.use(express.static(path.join(__dirname, 'public')))
 
-const server = app.listen(app.get('port'), ()=>{ 
+const server = app.listen(app.get('port'), () => {
     console.log('server on port', app.get('port'))
 })
 const io = SocketIO.listen(server)
 
 
-
 const sessionMap = {}
-io.on('connect',(client)=>{
 
+io.on('connect', (client) => {
     console.log("Se conecto", client.id)
-    client.emit("askForUserId");  
-
+    client.emit("askForUserId");
     client.on("userIdReceived", (userId) => {
         sessionMap[userId] = client.id
         console.log(sessionMap)
@@ -42,29 +40,18 @@ io.on('connect',(client)=>{
         console.log(data);
         console.log("#")
         console.log("#")
-
-
     });
 
-
-
     client.on("syncScreen", function(data) {
-
         console.log("#")
         console.log("#")
         console.log(data);
         console.log("#")
         console.log("#")
-
-        const id_client  = sessionMap[data.receiver.user_id]
-        const id_asesora = sessionMap[data.sender.valoration.user_asesora]
-        const image     = `images/${data.sender.valoration.valoration_code}/out.png?ramdom=`
-        
+        const id_client = sessionMap[data.client_id]
+        const image = `images/${data.valoration_id}/out.png?ramdom=${Math.random()}`
         console.log(id_client)
-
-        io.to(id_client).emit("displayImage", {"uri" : image});
-        io.to(id_asesora).emit("displayImage", {"uri" : image});  
-
+        console.log(image)
+        io.to(id_client).emit("displayImage", { "uri": image });
     });
-
 })
